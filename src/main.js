@@ -10,12 +10,14 @@ const preload = () => {
 };
 
 const create = () => {
+	game.physics.startSystem(Phaser.Physics.ARCADE);
 	ball = game.add.sprite(50, 50, 'ball');
+	game.physics.enable(ball, Phaser.Physics.ARCADE);
+	ball.body.velocity.set(150, 150);
 };
 
 const update = () => {
-	ball.x += 1;
-	ball.y += 1;
+	
 };
 
 const game = new Phaser.Game(480, 320, Phaser.CANVAS, null, {
