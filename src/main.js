@@ -1,5 +1,8 @@
 const preload = () => {
-
+	game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+	game.scale.pageAlignHorizontally = true;
+	game.scale.PageAlignVertically = true;
+	game.stage.backgroundColor = '#eee';
 };
 
 const create = () => {
