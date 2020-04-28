@@ -42,7 +42,14 @@ const initBricks = () => {
 }
 
 const ballHitBrick = (ball, brick) => {
-	brick.kill();
+	
+	const killTween = game.add.tween(brick.scale);
+	killTween.to({x: 0, y: 0}, 200, Phaser.Easing.Linear.None);
+	killTween.onComplete.addOnce(() => {
+		brick.kill();
+	}, this);
+	killTween.start();
+
 	score += 10;
 	scoreText.setText(`Points: ${score}`);
 
@@ -58,6 +65,10 @@ const ballHitBrick = (ball, brick) => {
 		alert('You win, congrats!');
 		location.reload();
 	}
+}
+
+const ballHitPaddle = (ball, paddle) => {
+	ball.animations.play('wobble');
 }
 
 const ballLeaveScreen = () => {
@@ -86,12 +97,14 @@ const preload = () => {
 	game.load.image('ball', '../img/ball.png');
 	game.load.image('paddle', '../img/paddle.png');
 	game.load.image('brick', '../img/brick.png');
+	game.load.spritesheet('ball', '../img/wobble.png', 20, 20);
 };
 
 const create = () => {
 	game.physics.startSystem(Phaser.Physics.ARCADE);
 
-	ball = game.add.sprite(game.world.width * 0.5, game.world.height - 25, 'ball');
+	ball = game.add.sprite(50, 250, 'ball');
+	ball.animations.add('wobble', [0, 1, 0, 2, 0, 1, 0, 2, 0], 24);
 	ball.anchor.set(0.5);
 
 	paddle = game.add.sprite(game.world.width * 0.5, game.world.height - 5, 'paddle');
@@ -112,14 +125,14 @@ const create = () => {
 	scoreText = game.add.text(5, 5, 'Points: 0', textStyle);
 
 	livesText = game.add.text(game.world.width - 5, 5, `Lives: ${lives}`, textStyle);
-	livesText.acnhor.set(1, 0);
+	livesText.anchor.set(1, 0);
 	lifeLostText = game.add.text(game.world.width * 0.5, game.world.height * 0.5, 'Life lost, click to continue', textStyle);
 	lifeLostText.anchor.set(0.5);
 	lifeLostText.visible = false;
 };
 
 const update = () => {
-	game.physics.arcade.collide(ball, paddle);
+	game.physics.arcade.collide(ball, paddle, ballHitPaddle);
 	game.physics.arcade.collide(ball, bricks, ballHitBrick);
 	paddle.x = game.input.x || game.world.width * 0.5;
 };
